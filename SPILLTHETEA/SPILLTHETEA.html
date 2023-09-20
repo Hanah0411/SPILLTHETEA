@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPILL THE TEA</title>
+    <style>
+        body {
+            font-family: Calibri, sans-serif;
+            background-image: url('img.jpg'); 
+            background-repeat: repeat; 
+            background-size: 20%; 
+            background-position: center; 
+            margin: 0; 
+            padding: 0; 
+        }
+        #chismes {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: rgba(230, 206, 205, 0.7); 
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+        #chismes h1 {
+            text-align: center;
+        }
+        label {
+            font-weight: bold;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background-color: #fff;
+        }
+        .anonimo {
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div id="chismes">
+        <h1>SPILL THE TEA</h1>
+
+        <!-- Formulario para ingresar tu chisme -->
+        <div id="formulario">
+            <h2>Ingresa un chisme</h2>
+            <form onsubmit="agregarChisme(); return false;">
+                <label for="chisme">Chisme:</label>
+                <textarea id="chisme" rows="4" required></textarea><br>
+                <label for="anonimo">¿Anónimo?</label>
+                <input type="checkbox" id="anonimo"><br>
+                <button type="submit">Enviar</button>
+            </form>
+        </div>
+
+        <!-- Lista de chismes -->
+        <div id="listaChismes">
+            <h2>Chismes</h2>
+            <ul></ul>
+        </div>
+    </div>
+
+    <script>
+        // Almacen de los chismes
+        let chismes = [];
+
+        // Función para agregar un chisme
+        function agregarChisme() {
+            const chismeTexto = document.getElementById("chisme").value;
+            const esAnonimo = document.getElementById("anonimo").checked;
+
+            if (chismeTexto.trim() === "") {
+                alert("Por favor, ingresa un chisme.");
+                return;
+            }
+
+           
+            const nuevoChisme = {
+                texto: chismeTexto,
+                anonimo: esAnonimo
+            };
+
+         
+            chismes.push(nuevoChisme);
+
+            // Limpiar el campo de texto
+            document.getElementById("chisme").value = "";
+
+            // Actualizar la lista de chismes
+            mostrarChismes();
+        }
+
+        //  Lista de los chismes
+        function mostrarChismes() {
+            const listaChismes = document.querySelector("#listaChismes ul");
+            listaChismes.innerHTML = "";
+
+            chismes.forEach((chisme, index) => {
+                const listItem = document.createElement("li");
+                listItem.innerHTML = `
+                    <p>${chisme.anonimo ? '<span class="anonimo">(Anónimo)</span>' : '<span class="usuario">(Usuario)</span>'}</p>
+                    <p>${chisme.texto}</p>
+                `;
+                listaChismes.appendChild(listItem);
+            });
+        }
+
+       
+        window.onload = () => {
+            const storedChismes = localStorage.getItem("chismes");
+            if (storedChismes) {
+                chismes = JSON.parse(storedChismes);
+                mostrarChismes();
+            }
+        };
+         window.onbeforeunload = () => {
+            localStorage.setItem("chismes", JSON.stringify(chismes));
+        };
+    </script>
+</body>
+</html>
